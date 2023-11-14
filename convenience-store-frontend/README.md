@@ -1,27 +1,58 @@
-# StoreInventoryFrontend
+# Full Stack Convenience Store System - Angular Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.2.
 
-## Development server
+<img src="https://github.com/manowari/Full-Stack-Convenient-Store-System-/assets/141199798/e6b70f9f-f3e1-4533-8a93-0d764f04c357" alt="Image" width="400" height="300">
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+This repository folder contains the Angular frontend for the Full Stack Convenience Store System.
 
-## Build
+## Project Overview
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+The Full Stack Convenience Store System is a comprehensive system designed to manage inventory, user authentication, and product information for a convenience store. This repository specifically focuses on the Angular frontend.
 
-## Running unit tests
+## Folder Structure
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+The project follows a modularized structure for better organization. Here is an overview of the key folders and their contents:
 
-## Running end-to-end tests
+- **app**
+  - **auth**: Contains components and modules related to user authentication.
+  - **header-footer**: Contains components for the header and footer of the application.
+  - **products-module**: Modules and components related to product management.
+  - **users-module**: Modules and components related to user management.
+  - **app.component.ts**: The main component that serves as the entry point for the application.
+  - **app.module.ts**: The main module that orchestrates the application.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- **assets**: Placeholder folder to store static assets.
 
-## Further help
+## Dependencies
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+The project utilizes the following key dependencies:
+
+- **Angular**: Version 16.2.5
+- **Angular Material**: Version 16.2.7
+- **Bootstrap**: Version 5.1.3
+- **Ngx Toastr**: Version x.x.x (for toast notifications)
+
+For a complete list of dependencies, refer to the `package.json` file.
+
+## Key Components
+
+### 1. Login Form Component
+
+The login form component (`auth/login-form`) is responsible for handling user authentication. It utilizes Angular Material components for input fields and buttons and incorporates Bootstrap for styling. The component includes features such as:
+
+- Reactive form for user input.
+- Integration with Angular Material Snackbar for toast notifications.
+- Option to view/hide the password using a toggle button.
+
+### 2. Dashboard Component
+
+The dashboard component (`dashboard`) serves as a protected page accessible only to authenticated users. It provides a basic welcome message and information about the system.
+
+## Usage
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/your-username/store-inventory-frontend.git
