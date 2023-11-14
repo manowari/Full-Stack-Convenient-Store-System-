@@ -1,0 +1,15 @@
+/* dashboard.component.scss */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+
+  .summary-section {
+    margin-bottom: 20px;
+  }
+
+  .table-section {
+    width: 80%;
+  }
+}

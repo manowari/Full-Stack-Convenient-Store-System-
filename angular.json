@@ -30,6 +30,10 @@
               "src/assets"
             ],
             "styles": [
+              "src/css/bootstrap-5.2.3-dist/css/bootstrap.min.css",
+
+              "src/css/bootstrap-5.2.3-dist/custom.css",
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -93,6 +97,7 @@
               "src/assets"
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
             "scripts": []

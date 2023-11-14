@@ -1,0 +1,32 @@
+<!-- auth/login-form/login-form.component.html -->
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="container mt-5" style="margin-left: 2rem;">
+
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="mb-3">
+        <mat-label>Username</mat-label>
+        <input matInput id="username" formControlName="username" required>
+      </mat-form-field>
+    </div>
+  </div>
+
+
+
+    <div class="row">
+
+    <div class="col">
+      <mat-form-field class="mb-3">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" id="password" formControlName="password" required>
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button">
+          <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+
+
+  </div>
+
+  <button type="submit" class="btn btn-primary">Login</button>
+</form>
