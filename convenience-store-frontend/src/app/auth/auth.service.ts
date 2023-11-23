@@ -1,5 +1,7 @@
+import { JwtAuthService } from './JwtAuthService';
 // auth/auth.service.ts
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
@@ -10,16 +12,34 @@ const USER_KEY = 'auth-user';
 export class AuthService {
   private timeoutId: any;
 
-  timeout = 2*60*1000;
+  timeout = 2 * 60 * 1000;
 
-  login(username: string, password: string): void {
-    // In a real application, you'd typically send a request to your authentication service
-    // to get the token. For simplicity, we're using a hardcoded token here.
-    const token = 'fake-jwt-token';
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, username);
-    this.resetAutoLogout();
+  // Add a configuration option for authentication method
+  private useHardcodedLogin = true;
 
+  constructor(private jwtAuthService: JwtAuthService) {} // Inject your JWT authentication service
+
+  login(username: string, password: string): Observable<boolean> {
+    if (this.useHardcodedLogin) {
+      // Simulate successful login with hardcoded credentials
+      const hardcodedUsers = [
+        { username: 'user1', password: 'password1' },
+        { username: 'user2', password: 'password2' },
+      
+      ];
+      const user = hardcodedUsers.find((u) => u.username === username && u.password === password);
+
+      if (user) {
+        this.handleSuccessfulLogin(user.username);
+        return of(true);
+      } else {
+        this.handleUnsuccessfulLogin();
+        return of(false);
+      }
+    } else {
+      // Use JWT authentication
+      return this.jwtAuthService.authenticate(username, password);
+    }
   }
 
   logout(): void {
@@ -45,12 +65,23 @@ export class AuthService {
     }, this.timeout);
   }
 
-
   getUsername(): string | null {
     return localStorage.getItem(USER_KEY);
   }
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  private handleSuccessfulLogin(username: string): void {
+    const token = 'fake-jwt-token'; // Replace with your actual JWT token
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, username);
+    this.resetAutoLogout();
+  }
+
+  private handleUnsuccessfulLogin(): void {
+    console.log('Invalid credentials');
+    // You can handle this according to your application's requirements
   }
 }

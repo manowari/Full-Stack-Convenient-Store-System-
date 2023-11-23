@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 
 import { MatInputModule } from '@angular/material/input';
@@ -24,6 +25,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { CurrencyPipe } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductsModuleModule } from './products-module/products-module.module';
+import { JwtInterceptor } from './auth-module/jwt.interceptor';
 
 
 
@@ -56,7 +58,18 @@ import { ProductsModuleModule } from './products-module/products-module.module';
     MatSortModule,
 
    ],
-  providers: [],
+
+   providers: [
+
+    {
+
+      provide: HTTP_INTERCEPTORS,
+    useClass: JwtInterceptor,
+
+    multi: true,},
+
+
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

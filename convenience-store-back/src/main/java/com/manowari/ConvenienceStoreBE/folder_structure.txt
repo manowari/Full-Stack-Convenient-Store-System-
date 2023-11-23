@@ -1,0 +1,16 @@
+Folder structure for C:\Users\grub\Documents\ALEKI\My Gits - Local\FS2\Full-Stack-Convenient-Store-System-\convenience-store-back\src\main\java\com\manowari\ConvenienceStoreBE:
+authentication_module_jwt|-JwtAuthenticationFilter.java
+authentication_module_jwt|-JwtUtils.java
+authentication_module_jwt|-SecurityConfig.java
+authentication_module_jwt|-UserDetailsServiceImpl.java
+Products-Module|-Product.java
+Products-Module|-ProductController.java
+Products-Module|-ProductRepository.java
+Users-Module|-Role.java
+Users-Module|-SecurityConfig.java
+Users-Module|-User.java
+Users-Module|-UserDetailsServiceImpl.java
+/authentication_module_jwt:
+|-ConvenienceStoreBeApplication.java
+/Products-Module:
+/Users-Module:
