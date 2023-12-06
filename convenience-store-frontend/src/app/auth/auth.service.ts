@@ -13,6 +13,8 @@ export class AuthService {
   private timeoutId: any;
 
   timeout = 2 * 60 * 1000;
+  private apiUrl = '/api';
+
 
   // Add a configuration option for authentication method
   private useHardcodedLogin = true;
