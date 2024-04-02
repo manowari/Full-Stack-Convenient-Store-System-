@@ -31,9 +31,10 @@ public class AuthenticationService {
     public User signup(RegisterUserDto input) {
         User user = new User();
         user.setFullName(input.getFullName());
-
-
+        user.setWorkclass(input.getWorkClass());
+        user.setUserName(input.getUserName());
         user.setEmail(input.getEmail());
+        user.setUserRole(input.getUserRole());
 
         user.setPassword(passwordEncoder.encode(input.getPassword()));
 
@@ -52,5 +53,8 @@ public class AuthenticationService {
         return userRepository.findByEmail(input.getEmail())
                 .orElseThrow();
     }
+
+
+
 }
 

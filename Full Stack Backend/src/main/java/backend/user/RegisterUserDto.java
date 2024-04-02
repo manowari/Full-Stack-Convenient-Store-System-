@@ -31,5 +31,35 @@ public class RegisterUserDto {
 
     private String fullName;
 
+    public String getUserName() {
+        return username;
+    }
+
+    public void setUserName(String username) {
+        this.username = username;
+    }
+
+    private String username;
+
+    private int workClass;
+
+    public int getWorkClass() {
+        return workClass;
+    }
+
+    public void setWorkClass(int workClass) {
+        this.workClass = workClass;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
+    private String userRole;
+
     // getters and setters here...
 }

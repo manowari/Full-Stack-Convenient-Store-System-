@@ -45,21 +45,15 @@ public class AuthenticationController {
         // Your registration logic here
         User registeredUser = authenticationService.signup(registerUserDto);
 
-        // Generate a CSRF token
-        CsrfToken csrfToken = new DefaultCsrfToken("X-CSRF-TOKEN", "_csrf", "abc123"); // Replace "abc123" with your actual CSRF token
-
-        // Return the registered user and CSRF token in the response body
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("user", registeredUser);
-        responseBody.put("csrfToken", csrfToken.getToken());
-
-        return ResponseEntity.ok().body(responseBody);
+        // Return only the registered user in the response body
+        return ResponseEntity.ok().body(registeredUser);
     }
 
 
 
 
-    @PostMapping("/backend/login")
+
+    @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 

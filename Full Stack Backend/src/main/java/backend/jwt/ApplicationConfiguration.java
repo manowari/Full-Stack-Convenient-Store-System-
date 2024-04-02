@@ -1,6 +1,7 @@
 package backend.jwt;
 
 
+import backend.user.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import backend.repo.UserRepository;
 
+import java.util.Optional;
+
 @Configuration
 public class ApplicationConfiguration {
     private final UserRepository userRepository;
@@ -22,9 +25,17 @@ public class ApplicationConfiguration {
 
     @Bean
     UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> {
+            Optional<User> userByEmail = userRepository.findByEmail(username);
+            if (userByEmail.isPresent()) {
+                return userByEmail.get();
+            } else {
+                return userRepository.findByUsername(username)
+                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            }
+        };
     }
+
 
     @Bean
     BCryptPasswordEncoder passwordEncoder() {

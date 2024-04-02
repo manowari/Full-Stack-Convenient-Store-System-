@@ -25,12 +25,58 @@ public class User implements UserDetails {
     @Column(unique = true, length = 100, nullable = false)
     private String email;
 
+
+    @Column(nullable = false, unique = true)
+    private String username;
+
     @Column(nullable = false)
     private String password;
+
+
+    public String getUserName() {
+        return username;
+    }
+
+    public void setUserName(String username) {
+        this.username = username;
+    }
+
+
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
+
+
+    public int getWorkclass() {
+        return workClass;
+    }
+
+    public int getWorkClass() {
+        return workClass;
+    }
+
+    public void setWorkclass(int workClass) {
+        this.workClass = workClass;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 1 CHECK (workclass BETWEEN 1 AND 5)")
+    private int workClass;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'officer'")
+    private String userRole;
+
+
+
+
 
     public Integer getId() {
         return id;
@@ -115,5 +161,14 @@ public class User implements UserDetails {
     }
 
     // Getters and setters
+
+
+
+    public boolean isValidUsername(String username) {
+        // Define regex pattern for allowed characters (alphanumeric and hyphen) and length (3-20 characters)
+        String regex = "^[a-zA-Z0-9-]{3,20}$";
+        return username.matches(regex);
+    }
+
 }
 

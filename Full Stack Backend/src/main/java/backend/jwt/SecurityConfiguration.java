@@ -37,11 +37,11 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("Configuring security filter chain...");
 
-        http.csrf().ignoringRequestMatchers("/auth/signup")
+        http.csrf().ignoringRequestMatchers("/auth/signup", "/auth/**")
                 .and()
                 .authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                .requestMatchers("/auth/csrf-token","/auth/signup" ).permitAll()
+                .requestMatchers("/auth/csrf-token","/auth/signup", "/auth/**","/api/user/**" ).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

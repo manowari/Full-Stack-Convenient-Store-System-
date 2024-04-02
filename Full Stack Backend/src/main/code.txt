@@ -1,4 +1,12 @@
 
+
+
+
+
+
+
+
+
 //
 //
 //
@@ -30,3 +38,26 @@
 //    }
 //
 //}
+
+
+
+
+//
+//    @PostMapping("/signup")
+//    public ResponseEntity<Object> register(@RequestBody RegisterUserDto registerUserDto, HttpServletRequest request) {
+//        System.out.println("POST request to /auth/signup");
+//
+//        // Your registration logic here
+//        User registeredUser = authenticationService.signup(registerUserDto);
+//
+//        // Generate a CSRF token
+//        CsrfToken csrfToken = new DefaultCsrfToken("X-CSRF-TOKEN", "_csrf", "abc123"); // Replace "abc123" with your actual CSRF token
+//
+//        // Return the registered user and CSRF token in the response body
+//        Map<String, Object> responseBody = new HashMap<>();
+//        responseBody.put("user", registeredUser);
+//        responseBody.put("csrfToken", csrfToken.getToken());
+//
+//        return ResponseEntity.ok().body(responseBody);
+//    }
+
