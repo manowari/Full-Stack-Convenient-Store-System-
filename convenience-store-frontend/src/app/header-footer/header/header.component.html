@@ -4,11 +4,15 @@
   <h1 class="navbar-brand">My Store Header</h1>
 
   <div class="navbar-collapse justify-content-end">
-    <div class="navbar-nav">
+
+
+    <div class="navbar-nav" *ngIf="isLoggedIn">
       <!-- Material Icon Logout Button -->
       <button id="logoutButton" class="btn btn-outline-danger" (click)="logout()">
         <i class="material-icons">exit_to_app</i> Logout
       </button>
+
+
     </div>
   </div>
 </header>

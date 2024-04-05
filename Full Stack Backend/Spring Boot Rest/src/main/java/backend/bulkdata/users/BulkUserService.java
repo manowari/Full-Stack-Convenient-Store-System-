@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import com.opencsv.CSVReader;
@@ -43,7 +44,7 @@ public class BulkUserService {
 
     }
 
-    public List<User> bulkSignup(List<UserDetailsDto> userDetailsList) {
+    public List<User> bulkSignup(List<UserDetailsDto> userDetailsList) throws Exception {
         List<User> userList = new ArrayList<>();
         for (UserDetailsDto userDetails : userDetailsList) {
             User user = authenticationService.signup(userDetails);

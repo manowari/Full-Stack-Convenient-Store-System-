@@ -35,17 +35,26 @@ public class User implements UserDetails {
 
 
     @Column(unique = true)
-    private final String pf;
+    private   String pf;
 
-    public User(String pf, String fullName, int workClass, String username, String email, String userRole, String password) {
+
+    public User() {
+        // Default constructor with no parameters
+    }
+
+
+    public User(  String pf, String fullName,
+                  int workClass, String username,
+                  String email,String password ,String userRole ) {
         this.pf = pf;
-        // Initialize other fields
+         // Initialize other fields
         this.fullName = fullName;
         this.workClass = workClass;
         this.userName = username;
         this.email = email;
-        this.userRole = userRole;
         this.password = password;
+
+        this.userRole = userRole;
     }
 
     // Getter method for pf field

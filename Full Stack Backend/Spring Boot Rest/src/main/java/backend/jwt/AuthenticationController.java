@@ -4,7 +4,10 @@ import backend.user.UserDetailsDto;
 import jakarta.servlet.http.HttpServletRequest;
 import backend.login.LoginResponse;
 import backend.login.LoginUserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -12,6 +15,7 @@ import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.web.bind.annotation.*;
  import backend.user.User;
 
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +26,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     private final CsrfTokenRepository csrfTokenRepository;
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
 
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CsrfTokenRepository csrfTokenRepository) {
@@ -39,7 +44,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> register(@RequestBody UserDetailsDto registerUserDto, HttpServletRequest request) {
+    public ResponseEntity<Object> register(@RequestBody UserDetailsDto registerUserDto, HttpServletRequest request) throws Exception {
         System.out.println("POST request to /auth/signup");
 
         // Your registration logic here
@@ -54,8 +59,17 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) throws Exception {
+
+        logger.debug("Received login request with body: {}", loginUserDto);
+
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
+
+        // Check if authenticatedUser is null before proceeding
+        if (authenticatedUser == null) {
+            // Handle case where user is not found or authentication fails
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
@@ -63,7 +77,7 @@ public class AuthenticationController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
-
         return ResponseEntity.ok(loginResponse);
     }
+
 }

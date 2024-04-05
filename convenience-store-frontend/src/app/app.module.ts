@@ -17,8 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthRoutingModule } from './auth/auth-routing.module';
-
-
+ 
+ 
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
  import { MatPaginatorModule } from '@angular/material/paginator';
@@ -37,6 +37,7 @@ import { JwtInterceptor } from './auth-module/jwt.interceptor';
   imports: [
     MatTableModule,
     ProductsModuleModule,
+    HttpClientModule,
 
     MatSortModule,
     MatIconModule,

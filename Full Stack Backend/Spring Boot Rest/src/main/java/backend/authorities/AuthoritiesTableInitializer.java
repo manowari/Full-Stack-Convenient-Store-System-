@@ -15,7 +15,7 @@ public class AuthoritiesTableInitializer {
 
     public void createAuthoritiesTable() {
         String sql = "CREATE TABLE IF NOT EXISTS authorities ("
-                + "    username VARCHAR(50) NOT NULL,"
+                + "    user_name VARCHAR(50) NOT NULL,"
                 + "    authority VARCHAR(50) NOT NULL,"
                 + "    PRIMARY KEY (username, authority)"
                 + ")";

@@ -1,0 +1,104 @@
+  loginViaApi(username: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/login`, { username, password }).pipe(
+      tap((response) => {
+        if (response.token) {
+          localStorage.setItem(TOKEN_KEY, response.token);
+        }
+      }),
+      catchError((error) => {
+        return throwError(error);
+      })
+    );
+  }
+
+
+
+    logout(): void {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+
+    this.isLoggedIn = false;
+
+  }
+
+
+   login(username: string, password: string): Observable<boolean> {
+    if (this.useHardcodedLogin) {
+      // Simulate successful login with hardcoded credentials
+      const hardcodedUsers = [
+        { username: 'user1', password: 'password1' },
+        { username: 'user2', password: 'password2' },
+      
+      ];
+      const user = hardcodedUsers.find((u) => u.username === username && u.password === password);
+
+      if (user) {
+
+            
+    this.isLoggedIn = true;
+        this.handleSuccessfulLocalLogin(user.username);
+        return of(true);
+      } else {
+            
+    this.isLoggedIn = true;
+        this.handleUnsuccessfulLogin();
+        return of(false);
+      }
+    } else {
+          
+    this.isLoggedIn = true;
+      // Use JWT authentication
+      return this.jwtAuthService.authenticate(username, password);
+    }
+
+
+
+
+
+  }
+
+
+
+
+    onSubmit() {
+    if (this.loginForm.valid) {
+      const username = this.loginForm.value.username;
+      const password = this.loginForm.value.password;
+
+      // Hardcoded user credentials (replace with actual authentication logic)
+      const hardcodedUsers = [
+        { username: 'user1', password: 'password1' },
+        { username: 'user2', password: 'password2' },
+ 
+      ];
+
+      const user = hardcodedUsers.find((u) => u.username === username && u.password === password);
+
+      if (user) {
+        // Simulate successful login
+        this.authService.login(user.username, user.password);
+
+        // Display a snackbar notification for successful login
+        this.snackBar.open('Login successful', 'Close', { duration: 3000 });
+
+        // Log navigation attempt
+        console.log('Navigating to dashboard...');
+
+        // Redirect to the dashboard
+        this.router.navigate(['/dashboard']).then(() => {
+          // Log after navigation
+          console.log('Navigation to dashboard successful');
+        }).catch((error) => {
+          // Log navigation error
+          console.error('Error navigating to dashboard:', error);
+        });
+      } else {
+        // Display a snackbar notification for unsuccessful login
+        this.snackBar.open('Invalid credentials', 'Close', { duration: 3000 });
+        console.log('Invalid credentials');
+      }
+    }
+  }

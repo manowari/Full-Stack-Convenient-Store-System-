@@ -41,6 +41,8 @@ import java.util.List;
 public class CsvDataLoader implements CommandLineRunner {
 
     @Autowired
+    private TableManagement tableManagement;
+    @Autowired
     private BulkUserService bulkUserService;
 
     static CheckAndCreateUsersTable checkAndCreateUsersTable = new CheckAndCreateUsersTable();
@@ -50,8 +52,10 @@ public class CsvDataLoader implements CommandLineRunner {
 
 //        checkAndCreateUsersTable.createTable();
 
-        String csvFilePath = "C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\src\\main\\java\\backend\\bulkdata\\users\\users.csv";
+        String csvFilePath = "C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\Spring Boot Rest\\src\\main\\java\\backend\\bulkdata\\users\\users.csv";
         try (Reader reader = new FileReader(csvFilePath)) {
+//            tableManagement.dropAndRecreateUsersTable();
+
             List<UserDetailsDto> userDetailsList = parseCsv(reader);
             bulkUserService.bulkSignup(userDetailsList);
             System.out.println("CSV import successful.");
@@ -67,18 +71,19 @@ public class CsvDataLoader implements CommandLineRunner {
             // Skip the header row if it exists
             csvReader.skip(1); // Skip the first row (header)
 
-            String[] nextLine;
-            while ((nextLine = csvReader.readNext()) != null) {
+            String[] csvRow;
+            while ((csvRow = csvReader.readNext()) != null) {
                 UserDetailsDto userDetailsDto = new UserDetailsDto();
 
                 // Assuming the CSV columns are in the following order: pf, fullName, workClass, userName, email, userRole, password
-                userDetailsDto.setPf(normalize(nextLine[0]));
-                userDetailsDto.setFullName(normalize(nextLine[1]));
-                userDetailsDto.setWorkClass(Integer.parseInt(nextLine[2])); // Assuming workClass is already an integer
-                userDetailsDto.setUserName(normalize(nextLine[3]));
-                userDetailsDto.setEmail(normalize(nextLine[4]));
-                userDetailsDto.setUserRole(normalize(nextLine[5]));
-                userDetailsDto.setPassword(normalize(nextLine[6]));
+                userDetailsDto.setPf(csvRow[0]);
+                userDetailsDto.setFullName(csvRow[1]);
+                userDetailsDto.setWorkClass(Integer.parseInt(csvRow[2])); // Assuming workClass is already an integer
+                userDetailsDto.setUserName(csvRow[3]);
+                userDetailsDto.setEmail(csvRow[4]);
+                userDetailsDto.setPassword(csvRow[6]);
+                userDetailsDto.setUserRole(csvRow[5]); // Ensure that userRole is set correctly
+              // Ensure that password is set correctly
 
                 userDetailsList.add(userDetailsDto);
             }
@@ -86,6 +91,8 @@ public class CsvDataLoader implements CommandLineRunner {
 
         return userDetailsList;
     }
+
+
 
     // Normalize method to lowercase strings
     private String normalize(String input) {

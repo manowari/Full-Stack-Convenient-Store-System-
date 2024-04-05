@@ -9,7 +9,7 @@ public class CheckAndCreateUsersTable {
     public  void createTable( ) {
         Properties properties = new Properties();
         try {
-            properties.load(new FileInputStream("C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\src\\main\\resources\\application.properties"));
+            properties.load(new FileInputStream("C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\Spring Boot Rest\\src\\main\\resources\\application.properties"));
         } catch (FileNotFoundException e) {
             System.err.println("Application properties file not found: " + e.getMessage());
             return;
