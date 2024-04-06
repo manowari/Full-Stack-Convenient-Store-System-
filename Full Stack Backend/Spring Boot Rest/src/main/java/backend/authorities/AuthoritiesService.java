@@ -12,7 +12,7 @@ public class AuthoritiesService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void assignAuthority(String username, String authority) {
-        jdbcTemplate.update("INSERT INTO authorities (username, authority) VALUES (?, ?)", username, authority);
+    public void assignAuthority(String user_name, String authority) {
+        jdbcTemplate.update("INSERT INTO authorities (username, authority) VALUES (?, ?)", user_name, authority);
     }
 }

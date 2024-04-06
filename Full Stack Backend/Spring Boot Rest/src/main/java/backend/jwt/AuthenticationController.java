@@ -4,6 +4,7 @@ import backend.user.UserDetailsDto;
 import jakarta.servlet.http.HttpServletRequest;
 import backend.login.LoginResponse;
 import backend.login.LoginUserDto;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -44,40 +45,48 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> register(@RequestBody UserDetailsDto registerUserDto, HttpServletRequest request) throws Exception {
-        System.out.println("POST request to /auth/signup");
+    public ResponseEntity<Object> register(@RequestBody UserDetailsDto registerUserDto, HttpServletRequest request) {
+        try {
+            System.out.println("POST request to /auth/signup");
 
-        // Your registration logic here
-        User registeredUser = authenticationService.signup(registerUserDto);
+            // Your registration logic here
+            User registeredUser = authenticationService.signup(registerUserDto);
 
-        // Return only the registered user in the response body
-        return ResponseEntity.ok().body(registeredUser);
+            // Return only the registered user in the response body
+            return ResponseEntity.ok().body(registeredUser);
+        } catch (Exception ex) {
+            // If an exception occurs during registration (e.g., username or email already exists), return an error response
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 
 
-
-
-
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) throws Exception {
+    public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
-        logger.debug("Received login request with body: {}", loginUserDto);
+            if (authenticatedUser == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
 
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
+            String jwtToken = jwtService.generateToken(authenticatedUser);
 
-        // Check if authenticatedUser is null before proceeding
-        if (authenticatedUser == null) {
-            // Handle case where user is not found or authentication fails
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            // Create a JSON object containing the token and expiration time
+            String jsonResponse = "{\"token\": \"" + jwtToken + "\", \"expiresIn\": " + jwtService.getExpirationTime() + "}";
+
+            // Set the content type of the response to application/json
+            response.setContentType("application/json");
+
+            // Write the JSON response to the response body
+            response.getWriter().write(jsonResponse);
+
+            // Return ResponseEntity with OK status
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            // Handle any exceptions and return appropriate response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
-
-        return ResponseEntity.ok(loginResponse);
     }
 
 }

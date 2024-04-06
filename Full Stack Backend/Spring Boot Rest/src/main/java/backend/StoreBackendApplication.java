@@ -1,7 +1,7 @@
 package backend;
 
 import backend.authorities.AuthoritiesTableInitializer;
-import backend.routine.CheckAndCreateUsersTable;
+import backend.bulkdata.users.TableManagement;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -28,9 +28,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //		springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration.class
 //})
 public class StoreBackendApplication {
-	static CheckAndCreateUsersTable checkAndCreateUsersTable = new CheckAndCreateUsersTable();
-
-	public static void main(String[] args) {
+  	public static void main(String[] args) {
 
 
 //		System.setProperty("server.port", "9085");
@@ -44,12 +42,18 @@ public class StoreBackendApplication {
 	}
 
 
-	@Bean
-	public CommandLineRunner initializeAuthoritiesTable(AuthoritiesTableInitializer tableInitializer) {
-		System.out.println("CUSTOM_TEST Auth table being created  ");
+//	@Bean
+//	public CommandLineRunner initializeAuthoritiesTable(AuthoritiesTableInitializer tableInitializer) {
+//		System.out.println("CUSTOM_TEST Auth table being created  ");
+//
+//		return args -> tableInitializer.createAuthoritiesTable();
+//	}
+//
 
-		return args -> tableInitializer.createAuthoritiesTable();
-	}
+
+
+
+
 
 
 //

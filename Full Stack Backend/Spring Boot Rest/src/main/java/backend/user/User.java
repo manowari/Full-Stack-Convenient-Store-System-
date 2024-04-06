@@ -15,27 +15,47 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    private Integer id;
+    @Column(name="id")
 
-    @Column(nullable = false)
+    private int id;
+
+    @Column(name="full_name", nullable = false)
     private String fullName;
 
-    @Column(unique = true, length = 100, nullable = false)
+    @Column(name="email",unique = true, length = 100, nullable = false)
     private String email;
 
 
-    @Column(nullable = false, unique = true)
+    @Column(name="user_name",nullable = false, unique = true)
     private String userName;
 
-    @Column(nullable = false)
+    @Column(name="password", nullable = false)
     private String password;
 
 
-    @Column(unique = true)
+    @Column(name="pf",unique = true, nullable = false)
     private   String pf;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private Date createdAt;
+
+
+    @Column(name = "work_class", nullable = false, columnDefinition = "INT DEFAULT 1 CHECK (work_class BETWEEN 1 AND 5)")
+    private int workClass;
+
+    @Column(name = "user_role", nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'officer'")
+    private String userRole;
+
 
 
     public User() {
@@ -73,9 +93,7 @@ public class User implements UserDetails {
 
 
 
-    @CreationTimestamp
-    @Column(updatable = false, name = "created_at")
-    private Date createdAt;
+
 
 
     public int getWorkclass() {
@@ -97,12 +115,6 @@ public class User implements UserDetails {
     public void setUserRole(String userRole) {
         this.userRole = userRole;
     }
-
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 1 CHECK (workclass BETWEEN 1 AND 5)")
-    private int workClass;
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(50) DEFAULT 'officer'")
-    private String userRole;
 
 
 
@@ -152,9 +164,7 @@ public class User implements UserDetails {
         this.updatedAt = updatedAt;
     }
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private Date updatedAt;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

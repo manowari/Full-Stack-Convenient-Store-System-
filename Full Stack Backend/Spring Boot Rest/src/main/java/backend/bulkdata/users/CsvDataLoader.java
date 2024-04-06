@@ -45,16 +45,15 @@ public class CsvDataLoader implements CommandLineRunner {
     @Autowired
     private BulkUserService bulkUserService;
 
-    static CheckAndCreateUsersTable checkAndCreateUsersTable = new CheckAndCreateUsersTable();
+
 
     @Override
     public void run(String... args) throws Exception {
 
-//        checkAndCreateUsersTable.createTable();
+
 
         String csvFilePath = "C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\Spring Boot Rest\\src\\main\\java\\backend\\bulkdata\\users\\users.csv";
         try (Reader reader = new FileReader(csvFilePath)) {
-//            tableManagement.dropAndRecreateUsersTable();
 
             List<UserDetailsDto> userDetailsList = parseCsv(reader);
             bulkUserService.bulkSignup(userDetailsList);
@@ -81,8 +80,8 @@ public class CsvDataLoader implements CommandLineRunner {
                 userDetailsDto.setWorkClass(Integer.parseInt(csvRow[2])); // Assuming workClass is already an integer
                 userDetailsDto.setUserName(csvRow[3]);
                 userDetailsDto.setEmail(csvRow[4]);
-                userDetailsDto.setPassword(csvRow[6]);
-                userDetailsDto.setUserRole(csvRow[5]); // Ensure that userRole is set correctly
+                userDetailsDto.setPassword(csvRow[5]);
+                userDetailsDto.setUserRole(csvRow[6]); // Ensure that userRole is set correctly
               // Ensure that password is set correctly
 
                 userDetailsList.add(userDetailsDto);

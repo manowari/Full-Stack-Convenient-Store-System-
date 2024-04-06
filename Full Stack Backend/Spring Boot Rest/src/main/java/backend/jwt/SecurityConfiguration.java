@@ -24,15 +24,20 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CsrfTokenRepository csrfTokenRepository;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     public SecurityConfiguration(
             JwtAuthenticationFilter jwtAuthenticationFilter,
             AuthenticationProvider authenticationProvider,
-            CsrfTokenRepository csrfTokenRepository
+            CsrfTokenRepository csrfTokenRepository,
+            CorsConfigurationSource corsConfigurationSource
+
     ) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.csrfTokenRepository = csrfTokenRepository;
+        this.corsConfigurationSource = corsConfigurationSource;
+
         System.out.println("SecurityConfiguration constructor executed.");
     }
 
@@ -40,7 +45,12 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         System.out.println("Configuring security filter chain...");
 
-        http.csrf().ignoringRequestMatchers("/data-import/**" ,"/test/**", "/auth/**")
+        http.
+                cors().configurationSource(corsConfigurationSource())
+
+                .and()
+                .csrf().
+                ignoringRequestMatchers("/data-import/**" ,"/test/**", "/auth/**")
                 .and()
                 .authorizeRequests()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
@@ -69,7 +79,7 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:4200", "http://localhost:10000"));
         configuration.setAllowedMethods(List.of("GET","POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

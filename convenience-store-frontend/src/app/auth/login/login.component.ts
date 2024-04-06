@@ -5,6 +5,10 @@ import { AuthService } from '../auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+
+
+const TOKEN_KEY = 'auth-token';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -25,7 +29,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
@@ -43,16 +47,32 @@ export class LoginComponent implements OnInit {
     const credentials = this.loginForm.value;
     this.authService.login(credentials).subscribe(
       (response) => {
-        // Handle successful login response
-        this.snackBar.open('Login successful', 'Close', { duration: 3000 });
-        // Redirect to home page or desired route
-        this.router.navigate(['/dashboard']);
+
+        const restxt = response.body;
+        console.log('Received token:', JSON.stringify(restxt), "cred :" , credentials); // Log the received token
+
+        if (response && response.body && response.body.token) {
+          const token = response.body.token;
+          // Store the token in localStorage or wherever you are storing it
+          localStorage.setItem(TOKEN_KEY, token);
+    
+          // Optionally, update isLoggedIn status
+          this.authService.isLoggedIn = true;
+    
+          this.snackBar.open('Login successful', 'Close', { duration: 3000 });
+          this.router.navigate(['/dashboard']);
+        } else {
+          // Handl
+  
+          this.snackBar.open('Token not found in the response', 'Close', { duration: 3000 });
+        }
       },
       (error) => {
         // Handle login error
         this.snackBar.open('Login failed. Please check your credentials and try again.', 'Close', { duration: 3000 });
       }
     );
+    
   }
 
   togglePasswordVisibility(): void {

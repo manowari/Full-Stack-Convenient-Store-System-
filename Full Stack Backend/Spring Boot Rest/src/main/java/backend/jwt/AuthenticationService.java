@@ -50,10 +50,10 @@ public class AuthenticationService {
 
         // Create a message indicating which parameters already exist
         StringBuilder message = new StringBuilder("The following parameters already exist:");
-
-        if (pfExists) {
-            message.append(" pf");
-        }
+//
+//        if (pfExists) {
+//            message.append(" pf");
+//        }
         if (userNameExists) {
             message.append(" username");
         }

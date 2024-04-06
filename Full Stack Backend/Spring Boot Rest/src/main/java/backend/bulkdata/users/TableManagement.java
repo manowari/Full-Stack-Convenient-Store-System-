@@ -15,7 +15,7 @@ public class TableManagement {
 
         // Recreate the users table
         String createTableSQL = "CREATE TABLE users (" +
-                "id SERIAL PRIMARY KEY," +
+                "id INT AUTO_INCREMENT PRIMARY KEY," +
                 "pf VARCHAR(255) NOT NULL," +
                 "full_name VARCHAR(255) NOT NULL," +
                 "work_class INT NOT NULL," +
@@ -26,6 +26,7 @@ public class TableManagement {
                 "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
                 "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP" +
                 ")";
+
 
 
 
