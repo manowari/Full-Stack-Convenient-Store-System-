@@ -36,44 +36,43 @@ export class LoginComponent implements OnInit {
 
 
 
-  
-
-
   onSubmit(): void {
     if (this.loginForm.invalid) {
       return;
     }
-
+  
     const credentials = this.loginForm.value;
-    this.authService.login(credentials).subscribe(
-      (response) => {
-
-        const restxt = response.body;
-        console.log('Received token:', JSON.stringify(restxt), "cred :" , credentials); // Log the received token
-
-        if (response && response.body && response.body.token) {
-          const token = response.body.token;
+  
+    this.authService.signin(credentials).subscribe(
+      (response: any) => { // Add type assertion here
+        if (response && response.token) { // Access token property
+          const token = response.token;
           // Store the token in localStorage or wherever you are storing it
-          localStorage.setItem(TOKEN_KEY, token);
-    
+          localStorage.setItem('token', token);
+  
           // Optionally, update isLoggedIn status
           this.authService.isLoggedIn = true;
-    
+  
           this.snackBar.open('Login successful', 'Close', { duration: 3000 });
           this.router.navigate(['/dashboard']);
         } else {
-          // Handl
-  
+          // Handle case where token is not found in the response
           this.snackBar.open('Token not found in the response', 'Close', { duration: 3000 });
         }
       },
       (error) => {
-        // Handle login error
-        this.snackBar.open('Login failed. Please check your credentials and try again.', 'Close', { duration: 3000 });
+        if (error.status === 401) {
+          // Handle case where credentials are incorrect
+          this.snackBar.open('Invalid credentials. Please check your email and password and try again.', 'Close', { duration: 3000 });
+        } else {
+          // Handle other errors
+          this.snackBar.open('An error occurred while logging in. Please try again later.', 'Close', { duration: 3000 });
+        }
       }
     );
-    
   }
+  
+
 
   togglePasswordVisibility(): void {
     this.hidePassword = !this.hidePassword;

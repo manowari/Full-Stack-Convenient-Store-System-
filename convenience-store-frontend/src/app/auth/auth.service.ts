@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 import { environment } from '../config';
 
-const TOKEN_KEY = 'auth-token';
+const TOKEN_KEY = 'token';
 const USER_KEY = 'auth-user';
 
 interface LoginResponse {
@@ -24,91 +24,78 @@ export class AuthService {
   isLoggedIn = false; // Define isLoggedIn property
 
 
+  request_header=  new HttpHeaders(
+{
+  "No-Auth":"True"
+}
+
+  );
+
+  headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+
+
+
+  
+
   constructor(private http: HttpClient) {}
   private TOKEN_KEY = 'auth_token';
-
-  login(credentials: any): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json' // Adjust content type if needed
-    });
+ 
+ 
   
-    const API_URL = `${this.baseURL}/login`;
-    return this.http.post<any>(API_URL, credentials, { headers }).pipe(
-      tap((response) => {
-        console.log('Received response:', response, "crer", credentials); // Log the entire response
-        const responseBody = response.body;
-        if (responseBody && responseBody.token) {
-          const token = responseBody.token;
-          console.log('Received token:', token); // Log the received token
-          localStorage.setItem('TOKEN_KEY', token);
-        }
+signin(data:any){
+  let API_URL = `${this.baseURL}/login`;
+  return this.http.post(API_URL, data, { headers: this.headers, withCredentials: false }).pipe(map(res => {
+
+    console.log('Received response:', res ); // Log the entire response
+
+       
+        return res || {}
+
+
       }),
-      catchError(this.manageError)
-    );
-  }
+        catchError(this.manageError)
+      )
+} 
+
+
+removeToken(): void {
+  localStorage.removeItem(this.TOKEN_KEY);
+}
+
+getHeaders(): HttpHeaders {
+  const token = this.getToken();
+  return new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : ''
+  });
+}
 
 
 
-  losgin(credentials: any): Observable<any> {
-    const API_URL = `${this.baseURL}/auth/login`; // Assuming the login endpoint is '/auth/login'
-    return this.http.post<any>(API_URL, credentials).pipe(
-      tap((response) => {
-        console.log('Received response:', response); // Log the entire response
-        if (response && response.token) {
-          const token = response.token;
-          console.log('Received token:', token); // Log the received token
-          localStorage.setItem(this.TOKEN_KEY, token);
-        } else {
-          // Handle the case where no token is received
-          console.error('No token received in the response');
-          throw new Error('Authentication failed'); // Emit an error to be caught by catchError
-        }
-      }),
-      catchError(this.handleError)
-    );
-  }
+ 
 
-  private handleError(error: any) {
-    console.error('An error occurred:', error);
-    return throwError(error); // Rethrow the error for the component to handle
-  }
-  // login(credentials: any): Observable<any> {
-  //   const API_URL = `${this.baseURL}/login`;
-  //   return this.http.post<any>(API_URL, credentials, { observe: 'response' }).pipe(
+
+  // losgin(credentials: any): Observable<any> {
+  //   const API_URL = `${this.baseURL}/auth/login`; // Assuming the login endpoint is '/auth/login'
+  //   return this.http.post<any>(API_URL, credentials).pipe(
   //     tap((response) => {
-  //       console.log('Received response:', response); // Log the entire response
-  //       const responseBody = response.body;
-  //       if (response.status === 200 && responseBody && responseBody.token) {
-  //         const token = responseBody.token;
+  //       console.log('Received token:', JSON.stringify(response), "cred :" , credentials); // Log the received token
+  //       if (response && response.token) {
+  //         const token = response.token;
   //         console.log('Received token:', token); // Log the received token
-  //         localStorage.setItem(TOKEN_KEY, token);
+  //         localStorage.setItem(this.TOKEN_KEY, token);
+  //       } else {
+  //         // Handle the case where no token is received
+  //         console.error('No token received in the response');
+  //         throw new Error('Authentication failed'); // Emit an error to be caught by catchError
   //       }
   //     }),
-  //     catchError(this.manageError)
+  //     catchError(this.handleError)
   //   );
   // }
-  
-  
 
-  // login(credentials: any): Observable<any> {
-  //   let API_URL = `${this.baseURL}/login`;
-  //   return this.http.post(API_URL, credentials, { withCredentials: false }).pipe(
-  //     tap((res: any) => {
 
-  //       console.log(' In API Received token:', JSON.stringify(res.body), "cred :" , credentials);
-  //       // Extract the token from the response body
-  //       const token = res.token;
-  //       // Store the token securely (e.g., in localStorage)
-  //       localStorage.setItem(TOKEN_KEY, token);
-  //       // Optionally, decode and validate the token
-  //       const isTokenValid = !this.jwtHelper.isTokenExpired(token);
-  //       if (!isTokenValid) {
-  //         // Handle invalid token
-  //       }
-  //     }),
-  //     catchError(this.manageError)
-  //   );
-  // }
 
   manageError(error: HttpErrorResponse) {
     let errorMessage = '';

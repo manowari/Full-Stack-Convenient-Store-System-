@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.DefaultCsrfToken;
@@ -44,6 +46,12 @@ public class AuthenticationController {
         return csrfTokenRepository.generateToken(request);
     }
 
+
+
+
+
+
+
     @PostMapping("/signup")
     public ResponseEntity<Object> register(@RequestBody UserDetailsDto registerUserDto, HttpServletRequest request) {
         try {
@@ -62,30 +70,28 @@ public class AuthenticationController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
         try {
             User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
             if (authenticatedUser == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
             }
 
             String jwtToken = jwtService.generateToken(authenticatedUser);
+            long expiresIn = jwtService.getExpirationTime();
 
-            // Create a JSON object containing the token and expiration time
-            String jsonResponse = "{\"token\": \"" + jwtToken + "\", \"expiresIn\": " + jwtService.getExpirationTime() + "}";
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", jwtToken);
+            response.put("expiresIn", expiresIn);
 
-            // Set the content type of the response to application/json
-            response.setContentType("application/json");
-
-            // Write the JSON response to the response body
-            response.getWriter().write(jsonResponse);
-
-            // Return ResponseEntity with OK status
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(response);
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         } catch (Exception e) {
-            // Handle any exceptions and return appropriate response
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
         }
     }
 

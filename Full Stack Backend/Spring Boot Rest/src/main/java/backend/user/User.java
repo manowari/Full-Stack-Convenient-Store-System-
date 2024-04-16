@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -168,7 +169,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of( new SimpleGrantedAuthority(userRole));
     }
 
     public String getPassword() {
@@ -202,6 +203,9 @@ public class User implements UserDetails {
 
     // Getters and setters
 
+//    @Enumerated(EnumType.STRING)
+//    private Role role;
+
 
 
     public boolean isValidUsername(String username) {
@@ -209,6 +213,9 @@ public class User implements UserDetails {
         String regex = "^[a-zA-Z0-9-]{3,20}$";
         return username.matches(regex);
     }
+
+
+
 
 }
 

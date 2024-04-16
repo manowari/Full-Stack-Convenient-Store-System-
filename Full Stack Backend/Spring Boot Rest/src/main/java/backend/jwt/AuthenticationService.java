@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,14 +69,34 @@ public class AuthenticationService {
         }
 
         // Create a new User entity
-        String hashedPassword = AESUtil.encrypt(input.getPassword());
-
+        String hashedPassword = passwordEncoder.encode(input.getPassword());
 
         User user = new User(input.getPf(), input.getFullName(), input.getWorkClass(), input.getUserName(), input.getEmail(),hashedPassword, input.getUserRole());
 
         // Save the user entity
         return userRepository.save(user);
     }
+
+
+
+    public User authenticate(LoginUserDto input) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            input.getEmail(),
+                            input.getPassword()
+                    )
+            );
+        } catch (AuthenticationException e) {
+            // Handle authentication failure (invalid credentials, locked user, etc.)
+            throw new BadCredentialsException("Invalid email or password");
+        }
+
+        return userRepository.findByEmail(input.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+
 
 //    public User authenticate(LoginUserDto input) {
 //        try {
@@ -93,6 +114,8 @@ public class AuthenticationService {
 //            String rawPassword = input.getPassword();
 //            String encodedPasswordFromJSON = passwordEncoder.encode(rawPassword);
 //
+//
+////            String encodedPasswordFromJSON = AESUtil.encrypt(input.getPassword());
 //            // Log encoded passwords
 //            logger.debug("Encoded password from DB: {}", encodedPasswordFromDB);
 //            logger.debug("Encoded password from JSON body: {}", encodedPasswordFromJSON);
@@ -108,6 +131,8 @@ public class AuthenticationService {
 //            }
 //        } catch (BadCredentialsException ex) {
 //            throw new BadCredentialsException("Invalid email or password", ex);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
 //        }
 //    }
 
@@ -137,32 +162,46 @@ public class AuthenticationService {
 
 
 
-
-
-    public User authenticate(LoginUserDto input) throws Exception {
-        // Retrieve the user by email
-        User user = userRepository.findByEmail(input.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + input.getEmail()));
-
-        // Retrieve the encrypted password from the database
-        String encryptedPasswordFromDB = userRepository.findEncodedPasswordByEmail(input.getEmail());
-
-
-        String hashedPassword = AESUtil.encrypt(input.getPassword());
-
-
-        // Decrypt the encrypted password from the database
-
-        String decryptedPasswordFromDB = AESUtil.decrypt(encryptedPasswordFromDB);
-
-        // Compare the decrypted password from the database with the input password
-        if (encryptedPasswordFromDB.equals(hashedPassword)) {
-            return user;
-        } else {
-
-logger.debug(" encryptedPasswordFromDB - " + decryptedPasswordFromDB+" dep " + encryptedPasswordFromDB + " vs " +hashedPassword );
-            throw new BadCredentialsException("Invalid email or password");
-        }
-    }
+//
+//
+//    public User authenticate(LoginUserDto input) throws Exception {
+//
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            input.getEmail(),
+//                            input.getPassword()
+//                    )
+//            );
+//
+//
+//            // Retrieve the user by email
+//            User user = userRepository.findByEmail(input.getEmail())
+//                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + input.getEmail()));
+//
+//            // Retrieve the encrypted password from the database
+//            String encryptedPasswordFromDB = userRepository.findEncodedPasswordByEmail(input.getEmail());
+//
+//
+//            String hashedPassword = AESUtil.encrypt(input.getPassword());
+//
+//
+//            // Decrypt the encrypted password from the database
+//
+//            String decryptedPasswordFromDB = AESUtil.decrypt(encryptedPasswordFromDB);
+//
+//            // Compare the decrypted password from the database with the input password
+//            if (encryptedPasswordFromDB.equals(hashedPassword)) {
+//                return user;
+//            } else {
+//
+//                logger.debug(" encryptedPasswordFromDB - " + decryptedPasswordFromDB + " dep " + encryptedPasswordFromDB + " vs " + hashedPassword);
+//                throw new BadCredentialsException("Invalid email or password");
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
 }
 

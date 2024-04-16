@@ -35,54 +35,112 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.handlerExceptionResolver = handlerExceptionResolver;
     }
 
+
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-
         System.out.println("JwtAuthenticationFilter invoked!"); // Add this line
 
-        final String authHeader = request.getHeader("Authorization");
-        logger.debug("Authorization Header: {}");
+        final String requestURI = request.getRequestURI();
+        if (!requestURI.equals("/auth/login") && !requestURI.equals("/auth/signup")) { // Skip authentication for login and signup endpoints
+            final String authHeader = request.getHeader("Authorization");
+            logger.debug("Authorization Header: {}" + authHeader);
 
-
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        try {
-            final String jwt = authHeader.substring(7);
-            final String userEmail = jwtService.extractUsername(jwt);
-
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if (userEmail != null && authentication == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return;
             }
 
+            try {
+                final String jwt = authHeader.substring(7);
+                final String userEmail = jwtService.extractUsername(jwt);
+
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+                if (userEmail != null && authentication == null) {
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                    if (jwtService.isTokenValid(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                }
+
+                filterChain.doFilter(request, response);
+                logger.debug("JWT authentication successful for user: {}"+ userEmail);
+
+            } catch (Exception exception) {
+                logger.error("Exception occurred during JWT authentication: {}"+ exception.getMessage());
+                handlerExceptionResolver.resolveException(request, response, null, exception);
+            }
+        } else {
+            // Allow access to the login and signup endpoints without authentication
             filterChain.doFilter(request, response);
-            logger.debug("JWT authentication successful for user: {}");
-
-        } catch (Exception exception) {
-
-            logger.error("Exception occurred during JWT authentication: {}");
-
-            handlerExceptionResolver.resolveException(request, response, null, exception);
         }
     }
+
+//
+//    @Override
+//    protected void doFilterInternal(
+//            @NonNull HttpServletRequest request,
+//            @NonNull HttpServletResponse response,
+//            @NonNull FilterChain filterChain
+//    ) throws ServletException, IOException {
+//
+//        System.out.println("JwtAuthenticationFilter invoked!"); // Add this line
+//
+//        final String authHeader = request.getHeader("Authorization");
+//        logger.debug("Authorization Header: {}");
+//
+//
+//
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//
+//        try {
+//            final String jwt = authHeader.substring(7);
+//            final String userEmail = jwtService.extractUsername(jwt);
+//
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//            if (userEmail != null && authentication == null) {
+//                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+//
+//                if (jwtService.isTokenValid(jwt, userDetails)) {
+//                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+//                            userDetails,
+//                            null,
+//                            userDetails.getAuthorities()
+//                    );
+//
+//                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//                    SecurityContextHolder.getContext().setAuthentication(authToken);
+//                }
+//            }
+//
+//            filterChain.doFilter(request, response);
+//            logger.debug("JWT authentication successful for user: {}");
+//
+//        } catch (Exception exception) {
+//
+//            logger.error("Exception occurred during JWT authentication: {}");
+//
+//            handlerExceptionResolver.resolveException(request, response, null, exception);
+//        }
+//    }
+//
+
+
 }

@@ -31,7 +31,7 @@ public class StoreBackendApplication {
   	public static void main(String[] args) {
 
 
-//		System.setProperty("server.port", "9085");
+		System.setProperty("server.port", "9085");
 
 		SpringApplication.run(StoreBackendApplication.class, args);
 
