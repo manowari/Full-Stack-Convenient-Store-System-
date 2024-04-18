@@ -1,4 +1,5 @@
 package backend.bulkdata.users;
+import backend.products.ProductDto;
 import backend.user.User;
 import backend.user.UserDetailsDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,9 @@ public class CsvImportController {
             return ResponseEntity.badRequest().body("Unknown error occurred during CSV import");
         }
     }
+
+
+
 
     private List<UserDetailsDto> parseCsv(BufferedReader reader) throws IOException {
         List<UserDetailsDto> userDetailsList = new ArrayList<>();

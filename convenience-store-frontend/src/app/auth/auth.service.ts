@@ -12,7 +12,7 @@ interface LoginResponse {
   token: string;
 }
 
- 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,80 +20,110 @@ export class AuthService {
    private baseURL = `${environment.authUrl}`;
   private timeoutId: any;
   private apiUrl = '/api';
+
   private jwtHelper: JwtHelperService = new JwtHelperService();
   isLoggedIn = false; // Define isLoggedIn property
 
-
-  request_header=  new HttpHeaders(
-{
-  "No-Auth":"True"
-}
-
-  );
-
+  username = ""
   headers = new HttpHeaders().set('Content-Type', 'application/json');
 
 
 
 
-  
+
 
   constructor(private http: HttpClient) {}
   private TOKEN_KEY = 'auth_token';
- 
- 
-  
+
+
+
 signin(data:any){
   let API_URL = `${this.baseURL}/login`;
   return this.http.post(API_URL, data, { headers: this.headers, withCredentials: false }).pipe(map(res => {
 
     console.log('Received response:', res ); // Log the entire response
+    this.isLoggedIn = true;
+    this.username =  data.email;
 
-       
         return res || {}
 
 
       }),
         catchError(this.manageError)
       )
-} 
+}
+
+
+logout(){
+
+  const headers = this.getHeaders(); // Get headers with authentication token
+
+  let API_URL = `${this.baseURL}/logout`;
+  console.log('Headers:', headers); // Log the headers
+
+
+  return this.http.post(API_URL, { headers: headers, }).pipe(map(res => {
+
+    console.log('Received response:', res ); // Log the entire response
+
+    this.isLoggedIn = false;
+
+        return res || {}
+
+
+      }),
+        catchError(this.manageError)
+      )
+}
+
+
+// logout(): Observable<any> {
+//   this.isLoggedIn = false;
+
+//   const headers = this.getHeaders(); // Get headers with authentication token
+//   return this.http.post<any>(`${this.apiUrl}/logout`, {}, { headers }).pipe(
+
+//     tap(() => {
+//       if (this.timeoutId) {
+
+
+//         clearTimeout(this.timeoutId);
+//       }
+//     }),
+//     catchError((error) => {
+//       return throwError(error);
+//     })
+//   );
+// }
 
 
 removeToken(): void {
   localStorage.removeItem(this.TOKEN_KEY);
 }
 
+ 
 getHeaders(): HttpHeaders {
   const token = this.getToken();
-  return new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': token ? `Bearer ${token}` : ''
-  });
+
+  // Log the token
+  console.log('Token:', token);
+
+  // Create a new HttpHeaders object
+  let headers = new HttpHeaders();
+
+  // Set the Content-Type header
+  headers = headers.set('Content-Type', 'application/json');
+
+  // Set the Authorization header if the token exists
+  if (token) {
+    headers = headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  console.log('Headers:', headers); // Log the headers
+
+  return headers;
 }
 
-
-
- 
-
-
-  // losgin(credentials: any): Observable<any> {
-  //   const API_URL = `${this.baseURL}/auth/login`; // Assuming the login endpoint is '/auth/login'
-  //   return this.http.post<any>(API_URL, credentials).pipe(
-  //     tap((response) => {
-  //       console.log('Received token:', JSON.stringify(response), "cred :" , credentials); // Log the received token
-  //       if (response && response.token) {
-  //         const token = response.token;
-  //         console.log('Received token:', token); // Log the received token
-  //         localStorage.setItem(this.TOKEN_KEY, token);
-  //       } else {
-  //         // Handle the case where no token is received
-  //         console.error('No token received in the response');
-  //         throw new Error('Authentication failed'); // Emit an error to be caught by catchError
-  //       }
-  //     }),
-  //     catchError(this.handleError)
-  //   );
-  // }
 
 
 
@@ -107,33 +137,15 @@ getHeaders(): HttpHeaders {
     return throwError(errorMessage);
   }
 
-  loginViaApi(username: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, { username, password }, { withCredentials: true }).pipe(
-      tap((response) => {
-        // No need to handle token in the response since it will be stored in HttpOnly cookie
-      }),
-      catchError((error) => {
-        return throwError(error);
-      })
-    );
-  }
 
-  logout(): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
-      tap(() => {
-        if (this.timeoutId) {
-          clearTimeout(this.timeoutId);
-        }
-      }),
-      catchError((error) => {
-        return throwError(error);
-      })
-    );
-  }
+
 
   getToken(): string | null {
     return localStorage.getItem(TOKEN_KEY);
   }
+
+
+
   resetAutoLogout() {
     if (this.timeoutId) {
       clearTimeout(this.timeoutId);
@@ -160,15 +172,15 @@ getHeaders(): HttpHeaders {
       this.isLoggedIn = false; // Set isLoggedIn to false if token is not present
     }
   }
-  
-  
-  getUsername(): string | null {
-    return localStorage.getItem(USER_KEY);
+
+
+  getUsername()  {
+    return this.username;
   }
 
   isAuthenticated(): boolean {
     const token = this.getToken();
     return !!token && !this.jwtHelper.isTokenExpired(token);
   }
-  
+
 }

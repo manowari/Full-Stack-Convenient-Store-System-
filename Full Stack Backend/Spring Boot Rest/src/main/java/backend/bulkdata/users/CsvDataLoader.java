@@ -1,5 +1,6 @@
 package backend.bulkdata.users;
 
+import backend.products.ProductDto;
 import backend.routine.CheckAndCreateUsersTable;
 import backend.user.UserDetailsDto;
 import com.opencsv.CSVReader;
@@ -11,9 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -51,19 +50,30 @@ public class CsvDataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
 
+        String usersFilePath = "C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\Spring Boot Rest\\src\\main\\java\\backend\\bulkdata\\users\\users.csv";
+        String productsFilePath = "C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\Spring Boot Rest\\src\\main\\java\\backend\\bulkdata\\users\\products.csv";
 
-        String csvFilePath = "C:\\Users\\grub\\Documents\\ALEKI\\Torch\\conv store\\Full-Stack-Convenient-Store-System-\\Full Stack Backend\\Spring Boot Rest\\src\\main\\java\\backend\\bulkdata\\users\\users.csv";
-        try (Reader reader = new FileReader(csvFilePath)) {
 
-            List<UserDetailsDto> userDetailsList = parseCsv(reader);
+        try (BufferedReader productsReader = new BufferedReader(new FileReader(productsFilePath));
+             BufferedReader usersReader = new BufferedReader(new FileReader(usersFilePath))) {
+
+            // Parse products CSV
+            List<ProductDto> productsList = parseProductsCsv(productsReader);
+            bulkUserService.bulkProductsAdd(productsList);
+            System.out.println("Products CSV import successful.");
+
+            // Parse users CSV
+            List<UserDetailsDto> userDetailsList = parseCsv(usersReader);
             bulkUserService.bulkSignup(userDetailsList);
-            System.out.println("CSV import successful.");
+            System.out.println("User CSV import successful.");
+
         } catch (IOException e) {
             System.err.println("Error importing CSV: " + e.getMessage());
         }
     }
 
-    private List<UserDetailsDto> parseCsv(Reader reader) throws IOException, CsvException {
+
+        private List<UserDetailsDto> parseCsv(Reader reader) throws IOException, CsvException {
         List<UserDetailsDto> userDetailsList = new ArrayList<>();
 
         try (CSVReader csvReader = new CSVReader(reader)) {
@@ -90,6 +100,38 @@ public class CsvDataLoader implements CommandLineRunner {
 
         return userDetailsList;
     }
+
+
+    private List<ProductDto> parseProductsCsv(BufferedReader reader) throws IOException, CsvException {
+        List<ProductDto> productList = new ArrayList<>();
+        String line;
+        int lineNumber = 0; // Track the line number for error reporting
+        while ((line = reader.readLine()) != null) {
+            lineNumber++;
+            // Split the CSV line and create a ProductDto object
+            String[] data = line.split(",");
+
+            // Ensure the data array has the expected number of elements
+            if (data.length != 3) {
+                System.err.println("Error parsing CSV at line " + lineNumber + ": Unexpected number of columns.");
+                continue; // Skip this line and proceed to the next one
+            }
+
+            ProductDto productDto = new ProductDto();
+            try {
+                productDto.setName(normalize(data[0]));
+                productDto.setPrice(Double.parseDouble(data[1]));
+                productDto.setQuantity(Integer.parseInt(data[2]));
+                productList.add(productDto);
+            } catch (NumberFormatException e) {
+                System.err.println("Error parsing CSV at line " + lineNumber + ": Invalid numeric value.");
+                continue; // Skip this line and proceed to the next one
+            }
+        }
+        return productList;
+    }
+
+
 
 
 

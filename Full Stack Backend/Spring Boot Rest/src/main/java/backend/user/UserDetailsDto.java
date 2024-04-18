@@ -4,15 +4,13 @@ public class UserDetailsDto {
     private String fullName;
     private int workClass;
 
-    public void setPf(String pf) {
-        this.pf = pf;
-    }
-
     private String pf;
 
     private String userName;
     private String email;
     private String userRole;
+    private String password;
+
 
     public String getPassword() {
         return password;
@@ -22,7 +20,10 @@ public class UserDetailsDto {
         this.password = password;
     }
 
-    private String password;
+
+    public void setPf(String pf) {
+        this.pf = pf;
+    }
 
 
 

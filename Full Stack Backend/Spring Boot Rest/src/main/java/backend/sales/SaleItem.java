@@ -4,6 +4,21 @@ import jakarta.persistence.*;
 
 @Entity
 public class SaleItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "sale_id")
+    private Sale sale;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    private int quantity;
     public Long getId() {
         return id;
     }
@@ -36,20 +51,7 @@ public class SaleItem {
         this.quantity = quantity;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "sale_id")
-    private Sale sale;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    private int quantity;
 
 
 

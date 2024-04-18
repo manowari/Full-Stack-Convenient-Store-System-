@@ -1,3 +1,4 @@
+import { UserService } from 'src/app/services/users/users.service';
 // dashboard.component.ts
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -5,9 +6,10 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
+import { ProductService } from '../product.service';
 
 interface Product {
-  product: string;
+  name: string;
   price: number;
   quantity: number;
   value: number;
@@ -18,8 +20,10 @@ interface Product {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
+
+
 export class DashboardComponent implements OnInit {
-  dataSource: MatTableDataSource<Product>;
+  dataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>(); // Initialize dataSource
   displayedColumns: string[] = ['product', 'price', 'quantity', 'value'];
 
   totalValue: number = 0;
@@ -29,26 +33,21 @@ export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
+    private productService: ProductService,
+    private userService: UserService,
+
     private authService: AuthService,
     private router: Router,
   ) {
     // Example data (replace with your actual data)
-    const products: Product[] = [
-      { product: 'Product A', price: 10, quantity: 50, value: 0 },
-      { product: 'Product B', price: 20, quantity: 30, value: 0 },
-      // Add more products as needed
-    ];
 
-    // Calculate total value and count of out-of-stock items
-    this.totalValue = products.reduce((total, product) => total + product.price * product.quantity, 0);
-    this.outOfStockCount = products.filter(product => product.quantity === 0).length;
-
-    // Calculate and set the 'value' property for each product
-    this.dataSource = new MatTableDataSource(products);
-        // Set up sorting and pagination
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
   }
+
+
+
+
+
+  userDetails: any;
 
   ngOnInit() {
     // Check if the user is authenticated
@@ -57,6 +56,42 @@ export class DashboardComponent implements OnInit {
       this.router.navigate(['/login']);
     }
 
+    this.userService.getUserDetails().subscribe(
+      (data) => {
+        console.log('User details:', data); // Log the response data
+        this.userDetails = data;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+
+    this.productService.getAllProducts().subscribe(
+      (products: Product[]) => {
+        console.log('User details:', products); // Log the response data
+
+
+        this.dataSource.data = products;
+        this.calculateSummary(products);
+      },
+      error => console.error('Error fetching products:', error)
+    );
+
+
 
   }
+
+
+
+  calculateValue(product: Product): number {
+    return product.price * product.quantity;
+  }
+
+  calculateSummary(products: Product[]): void {
+    this.totalValue = products.reduce((acc, cur) => acc + (cur.price * cur.quantity), 0);
+    this.outOfStockCount = products.filter(product => product.quantity === 0).length;
+  }
+
 }
+
+

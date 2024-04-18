@@ -7,6 +7,7 @@ import backend.login.LoginUserDto;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,9 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final CsrfTokenRepository csrfTokenRepository;
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
+    @Autowired
+    private JwtBlacklist jwtBlacklist; // Autowire JwtBlacklist component
 
 
     public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService, CsrfTokenRepository csrfTokenRepository) {
@@ -94,5 +98,32 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
         }
     }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String token = extractToken(request); // Implement this method to extract token from header
+
+        jwtBlacklist.addToBlacklist(token);
+
+        return ResponseEntity.ok("Logout successful");
+    }
+
+
+
+    private String extractToken(HttpServletRequest request) {
+        // Get the authorization header from the request
+        String authorizationHeader = request.getHeader("Authorization");
+
+        // Check if the authorization header is null or does not start with "Bearer "
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid authorization header");
+        }
+
+        // Extract the token from the authorization header
+        return authorizationHeader.substring(7); // "Bearer ".length() == 7
+    }
+
+
 
 }

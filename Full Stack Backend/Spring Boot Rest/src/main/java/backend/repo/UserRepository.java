@@ -11,6 +11,10 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Optional<User> findByUserName(String username);
+    Optional<User> findByPf(String pf);
+
+
+
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.pf = ?1 AND u.pf IS NOT NULL")
     boolean existsByPf(String pf);

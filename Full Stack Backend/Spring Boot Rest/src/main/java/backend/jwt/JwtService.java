@@ -14,12 +14,17 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
+
+    @Autowired
+    private JwtBlacklist jwtBlacklist; // Assuming you have a JwtBlacklist component
+
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     @Value("${security.jwt.secret-key}")
@@ -40,12 +45,27 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        String username = userDetails.getUsername();
+        // Check if the user's token is blacklisted
+        if (jwtBlacklist.isBlacklisted(username)) {
+            // If blacklisted, generate a new unique token
+            return buildToken(new HashMap<>(), userDetails, jwtExpiration);
+        }
+        // Generate a new token
+        return buildToken(new HashMap<>(), userDetails, jwtExpiration);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        // Check if the user's token is blacklisted
+        if (jwtBlacklist.isBlacklisted(username)) {
+            // If blacklisted, generate a new unique token
+            return buildToken(extraClaims, userDetails, jwtExpiration);
+        }
+        // Generate a new token
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
+
 
     public long getExpirationTime() {
         return jwtExpiration;

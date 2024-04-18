@@ -18,6 +18,7 @@ import backend.repo.UserRepository;
  import backend.user.User;
 
 import java.security.GeneralSecurityException;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
@@ -34,7 +35,7 @@ public class AuthenticationService {
             UserRepository userRepository,
             AuthenticationManager authenticationManager,
             BCryptPasswordEncoder passwordEncoder
-    ) {
+     ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -80,21 +81,55 @@ public class AuthenticationService {
 
 
     public User authenticate(LoginUserDto input) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            input.getEmail(),
-                            input.getPassword()
-                    )
-            );
-        } catch (AuthenticationException e) {
-            // Handle authentication failure (invalid credentials, locked user, etc.)
-            throw new BadCredentialsException("Invalid email or password");
+        String identifier = input.getEmail();
+        Optional<User> user = userRepository.findByEmail(identifier);
+
+        if (!user.isPresent()) {
+            // If user not found by email, try to find by pf
+            user = userRepository.findByPf(identifier);
         }
 
-        return userRepository.findByEmail(input.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (!user.isPresent()) {
+            // If user not found by pf, try to find by username
+            user = userRepository.findByUserName(identifier);
+        }
+
+        if (user.isPresent()) {
+            try {
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                identifier,
+                                input.getPassword()
+                        )
+                );
+                return user.get();
+            } catch (AuthenticationException e) {
+                throw new BadCredentialsException("Invalid email, pf, or username or password");
+            }
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
+
+
+
+
+//    public User authenticate(LoginUserDto input) {
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            input.getEmail(),
+//                            input.getPassword()
+//                    )
+//            );
+//        } catch (AuthenticationException e) {
+//            // Handle authentication failure (invalid credentials, locked user, etc.)
+//            throw new BadCredentialsException("Invalid email or password");
+//        }
+//
+//        return userRepository.findByEmail(input.getEmail())
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//    }
 
 
 

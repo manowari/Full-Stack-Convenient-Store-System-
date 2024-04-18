@@ -20,6 +20,21 @@ public class Sale {
 
     @OneToMany(mappedBy = "sale")
     private List<SaleItem> items;
+    private Date date;
+
+    private Long employeeId;
+
+    private String refId;
+
+    private Long modifiedBy;
+
+    private Long authorizedBy;
+
+
+
+
+
+
 
     public Long getId() {
         return id;
@@ -77,15 +92,5 @@ public class Sale {
         this.authorizedBy = authorizedBy;
     }
 
-    private Date date;
-
-    private Long employeeId;
-
-    private String refId;
-
-    private Long modifiedBy;
-
-    private Long authorizedBy;
-
-    // Getters and setters
+      // Getters and setters
 }

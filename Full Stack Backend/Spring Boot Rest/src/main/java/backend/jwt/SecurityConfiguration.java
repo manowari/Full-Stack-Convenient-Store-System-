@@ -83,7 +83,13 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                 // Permit access to other public endpoints if needed
                 .requestMatchers("/test/**").permitAll()
+
+
+
                 // Require authentication for all other requests
+
+                .requestMatchers(HttpMethod.GET, "/api/**").authenticated()
+
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -113,7 +119,7 @@ public class SecurityConfiguration {
         configuration.addAllowedMethod("POST");
         configuration.addAllowedMethod("DELETE");
         configuration.addAllowedMethod("PATCH");
-        System.out.println("-----------------------------------");
+        System.out.println("--Config orgs-");
         System.out.println(configuration.getAllowedOrigins());
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

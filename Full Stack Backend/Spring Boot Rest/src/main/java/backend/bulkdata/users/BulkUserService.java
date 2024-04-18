@@ -1,6 +1,9 @@
 package backend.bulkdata.users;
 
 import backend.jwt.AuthenticationService;
+import backend.products.Product;
+import backend.products.ProductDto;
+import backend.products.ProductRepository;
 import backend.repo.UserRepository;
 import backend.user.User;
 import backend.user.UserDetailsDto;
@@ -22,12 +25,16 @@ import org.springframework.stereotype.Service;
 
 import java.io.StringReader;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 
 @Service
 public class BulkUserService {
 
     private final PasswordEncoder passwordEncoder;
+
+    private final ProductRepository productRepository;
+
 
 
     private final UserRepository userRepository;
@@ -36,8 +43,10 @@ public class BulkUserService {
 
 
 
-    public BulkUserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
+    public BulkUserService(ProductRepository productRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
+
         this.passwordEncoder = passwordEncoder;
 
         this.authenticationService = authenticationService;
@@ -54,6 +63,28 @@ public class BulkUserService {
         }
         return userList;
     }
+
+
+
+    public List<Product> bulkProductsAdd(List<ProductDto> productDtoList) {
+        // Convert ProductDto to Product entities
+        List<Product> productList = productDtoList.stream()
+                .map(this::convertToProductEntity)
+                .collect(Collectors.toList());
+
+        // Save the list of products
+        return productRepository.saveAll(productList);
+    }
+
+    private Product convertToProductEntity(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setQuantity(productDto.getQuantity());
+        // Set other properties if needed
+        return product;
+    }
+
 
     public void importUsersFromCsv(String csvData) {
         try (CSVReader reader = new CSVReader(new StringReader(csvData))) {

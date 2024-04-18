@@ -117,6 +117,8 @@ public class User implements UserDetails {
         this.userRole = userRole;
     }
 
+    public void setPf(String pf) {
+        this.pf = pf;    }
 
 
 
