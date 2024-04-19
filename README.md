@@ -8,9 +8,10 @@
 
   
 
+- The store products dashboard fetching from the backend
+  ![image](https://github.com/manowari/Full-Stack-Convenient-Store-System-/assets/141199798/deb3436d-2e17-4cca-bf82-91787571a232)
 
 
 
 Still Under Development
-<img src="https://github.com/manowari/Full-Stack-Convenient-Store-System-/assets/141199798/e6b70f9f-f3e1-4533-8a93-0d764f04c357" alt="Image" width="800" height="500">
-
+ 
