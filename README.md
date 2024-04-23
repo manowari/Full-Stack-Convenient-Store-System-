@@ -11,6 +11,8 @@
 - The store products dashboard fetching from the backend
   ![image](https://github.com/manowari/Full-Stack-Convenient-Store-System-/assets/141199798/deb3436d-2e17-4cca-bf82-91787571a232)
 
+  - Role based access to info and privileges 
+
 
 
 Still Under Development
