@@ -8,8 +8,15 @@
 
   
 
-- The store products dashboard fetching from the backend
-  ![image](https://github.com/manowari/Full-Stack-Convenient-Store-System-/assets/141199798/deb3436d-2e17-4cca-bf82-91787571a232)
+- The store products dashboard fetching from the backend (admin mode)
+![image](https://github.com/manowari/Full-Stack-Convenient-Store-System-/assets/141199798/38ce8eda-dfa8-4905-9db3-523a79154a80)
+
+
+![image](https://github.com/manowari/Full-Stack-Convenient-Store-System-/assets/141199798/f59298bf-0673-430b-92f0-444683755274)
+
+
+
+  - Role based access to info and privileges 
 
 
 
