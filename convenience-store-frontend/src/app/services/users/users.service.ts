@@ -13,7 +13,14 @@ export class UserService {
 
    constructor(private http: HttpClient, private authApi: AuthService) {
 
+
+
    }
+   
+   isAdmin =  false ;
+
+
+
 
   getUserDetails(): Observable<any> {
 

@@ -1,11 +1,35 @@
+<div>
 <!-- dashboard/dashboard.component.html -->
+
+
+
+
 <div class="container mt-5">
 
+  <br>
+
+  <div *ngIf="isAdmin"class="container-bt " style="margin: 10px;"  >
+    <h5 style="align-self: flex-start;">My Actions</h5>
+
+    <mat-icon (click)="manageUsers()" title="Manage Users" data-toggle="tooltip">supervisor_account</mat-icon>
+
+    <mat-icon (click)="manageItems()" title="Manage Items" data-toggle="tooltip">shopping_cart</mat-icon>
+
+    <mat-icon (click)="manageOthers()" title="Manage Others" data-toggle="tooltip">settings</mat-icon>
+
+  </div>
+
   <!-- Summary Section -->
-  <div class="card mb-4">
-    <div class="card-header">
+  <div class="card mb-4" style="background-color: #879299; color: white; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+    <div class="card-header" style="background-color: #1f2b3e; color: white; border-top-left-radius: 10px; border-top-right-radius: 10px;">
       <h2>Summary</h2>
-    </div>
+
+
+
+
+
+  </div>
+
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
@@ -17,8 +41,10 @@
   </div>
 
   <!-- Table Section -->
-  <div class="card">
-    <div class="card-header">
+  <div class="card" style="background-color: #1f2b3e; color: white; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+
+    <div class="card-header" style="background-color: #449157; color: white; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+
       <h2>Product Table</h2>
     </div>
     <div class="card-body">
@@ -48,6 +74,15 @@
   <mat-cell *matCellDef="let element"> {{ calculateValue(element) | currency }} </mat-cell>
 </ng-container>
 
+<ng-container matColumnDef="actions">
+  <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+  <mat-cell *matCellDef="let element" class="action-icons">
+    <mat-icon class="rounded-icon primary" (click)="edit(element)" title="Edit" data-toggle="tooltip">edit</mat-icon>
+    <mat-icon class="rounded-icon warn" (click)="delete(element)" title="Delete" data-toggle="tooltip">delete</mat-icon>
+    <mat-icon class="rounded-icon accent" (click)="report(element)" title="Report" data-toggle="tooltip">report</mat-icon>
+    <mat-icon class="rounded-icon primary" (click)="assign(element)" title="Assign to employee" data-toggle="tooltip">assignment</mat-icon>
+  </mat-cell>
+</ng-container>
 
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -57,5 +92,8 @@
       <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
+
+</div>
+
 
 </div>

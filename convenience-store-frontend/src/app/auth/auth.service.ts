@@ -20,9 +20,10 @@ export class AuthService {
    private baseURL = `${environment.authUrl}`;
   private timeoutId: any;
   private apiUrl = '/api';
-
   private jwtHelper: JwtHelperService = new JwtHelperService();
   isLoggedIn = false; // Define isLoggedIn property
+
+
 
   username = ""
   headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -101,7 +102,7 @@ removeToken(): void {
   localStorage.removeItem(this.TOKEN_KEY);
 }
 
- 
+
 getHeaders(): HttpHeaders {
   const token = this.getToken();
 

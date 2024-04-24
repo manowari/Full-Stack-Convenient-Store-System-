@@ -1,15 +1,11 @@
-// header.component.scss
-header {
-  background-color: #333;
-  color: white;
-  padding: 20px;
-  height: 60px; // Adjust as needed
+/* styles.scss */
+
+.btn-logout {
+  border-color: #dc3545; /* Red border color */
+  color: #dc3545; /* Red text color */
 }
 
-// footer.component.scss
-footer {
-  background-color: #333;
-  color: white;
-  padding: 10px;
-  height: 40px; // Adjust as needed
+.btn-logout:hover {
+  background-color: #dc3545; /* Red background color on hover */
+  color: white; /* White text color on hover */
 }

@@ -1,4 +1,40 @@
-/* dashboard.component.scss */
+/* styles.scss */
+
+// Define the primary color as a darker blue for better contrast
+$primary-color: #1f2b3e !important;
+
+// Define a lighter shade of blue for contrast
+$lighter-blue: #3498db !important;
+
+.container-bt {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+  justify-content: flex-end; /* Align items to the right */
+  padding: 10px; /* Add padding to the container */
+
+  /* Add box shadow */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Horizontal offset, vertical offset, blur radius, and color */
+
+  /* Add rounded corners */
+  border-radius: 5px;
+
+  /* Add background color */
+  background-color: #f8f9fa; /* Light gray background color */
+
+  h5 {
+    align-self: flex-start; /* Align h2 to the left corner */
+    margin: 0; /* Reset margin to remove any default margin */
+  }
+
+}
+
+/* Style for the icons inside the container */
+.container-bt mat-icon {
+  font-size: 24px; /* Set icon size */
+  margin-left: 10px; /* Add spacing between icons */
+}
+
+
 .dashboard-container {
   display: flex;
   flex-direction: column;
@@ -7,9 +43,77 @@
 
   .summary-section {
     margin-bottom: 20px;
+    background-color: $lighter-blue; /* Lighter blue background for contrast */
+    color: white; /* White text color */
+    padding: 15px;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow */
   }
 
   .table-section {
     width: 80%;
   }
+
+  .action-buttons {
+    margin-right: 20px;
+    display: flex;
+    align-items: flex-start; /* Align items to the top */
+    justify-content: flex-end; /* Align items to the right */
+  }
+
+  .card {
+    background-color: $primary-color; /* Darker blue background for cards */
+    color: white; /* White text color */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow */
+  }
+
+  .card-header {
+    background-color: $lighter-blue; /* Lighter blue background for card headers */
+    color: white; /* White text color */
+    border-top-left-radius: 10px; /* Rounded corners */
+    border-top-right-radius: 10px; /* Rounded corners */
+  }
+
+  .mat-icon {
+    color: $primary-color; /* Dark blue color for material icons */
+  }
 }
+
+
+
+.action-icons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rounded-icon {
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 24px;
+  padding: 12px; /* Increased padding for better centering */
+  margin: 5px;
+  transition: background-color 0.3s;
+  display: inline-flex; /* Ensures the icon is centered */
+  align-items: center; /* Centers the icon vertically */
+  justify-content: center; /* Centers the icon horizontally */
+}
+
+
+.rounded-icon:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.primary {
+  color: #1976d2; /* Primary color */
+}
+
+.warn {
+  color: #d32f2f; /* Warn color */
+}
+
+.accent {
+  color: #4caf50; /* Accent color */
+}
+

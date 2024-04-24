@@ -1,18 +1,13 @@
-<!-- app.component.html or your header component template -->
-<header class="navbar navbar-expand-lg navbar-light bg-light">
+<header class="navbar navbar-expand-lg navbar-light bg-primary">
   <!-- Your header content goes here -->
-  <h1 class="navbar-brand">My Store Header</h1>
+  <h2 class="navbar-brand" style="margin: 10px;">Welcome to MyStore</h2>
 
   <div class="navbar-collapse justify-content-end">
-
-
     <div class="navbar-nav" *ngIf="isLoggedIn">
       <!-- Material Icon Logout Button -->
-      <button id="logoutButton" class="btn btn-outline-danger" (click)="logout()">
+      <button id="logoutButton" class="btn btn-danger" (click)="logout()">
         <i class="material-icons">exit_to_app</i> Logout
       </button>
-
-
     </div>
   </div>
 </header>

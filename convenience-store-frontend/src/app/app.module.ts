@@ -17,8 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthRoutingModule } from './auth/auth-routing.module';
- 
- 
+
+
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
  import { MatPaginatorModule } from '@angular/material/paginator';
@@ -26,6 +26,7 @@ import { CurrencyPipe } from '@angular/common';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductsModuleModule } from './products-module/products-module.module';
 import { JwtInterceptor } from './auth-module/jwt.interceptor';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 
@@ -38,7 +39,7 @@ import { JwtInterceptor } from './auth-module/jwt.interceptor';
     MatTableModule,
     ProductsModuleModule,
     HttpClientModule,
-
+    MatTooltipModule,
     MatSortModule,
     MatIconModule,
     MatInputModule,
@@ -57,6 +58,9 @@ import { JwtInterceptor } from './auth-module/jwt.interceptor';
     BrowserAnimationsModule,
     MatTableModule,
     MatSortModule,
+    MatIconModule,
+    
+
 
    ],
 
