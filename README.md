@@ -18,7 +18,7 @@
 
   - Role based access to info and privileges 
 
-
+You can view the [notes](Notes/objectives.md)
 
 Still Under Development
  
